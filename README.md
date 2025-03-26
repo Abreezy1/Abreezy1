@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @Abreezy1
-- 👀 I’m interested in ... Learninh how to Code
+- 👀 I’m interested in ... Learning how to Code
 - 🌱 I’m currently looking to find what I would be interested in learning
 - 💞️ I’m looking to collaborate on anything!
 - 📫 How to reach me - through my email!
