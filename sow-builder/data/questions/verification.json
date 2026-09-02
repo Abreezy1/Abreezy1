@@ -1,0 +1,136 @@
+{
+  "stage": "verification",
+  "title": "Assumptions vs confirmed",
+  "paths": {
+    "not_walked": {
+      "label": "Provisional - not site walked",
+      "intro": "This project was not site walked. Every item gathered so far is now tagged confirmed or assumed, one at a time. Anything left assumed appears verbatim in the assumptions block of the document.",
+      "item_prompt": "Is this confirmed, or is it an assumption?",
+      "options": [
+        { "value": "confirmed", "label": "Confirmed", "requires_basis": true },
+        { "value": "assumed", "label": "Assumed" },
+        { "value": "unverified", "label": "Unknown - carry as open item" }
+      ],
+      "basis_prompt": "What confirms it?",
+      "basis_help": "Who told you, or what document shows it. 'Customer facilities manager confirmed by email 12 Aug' - not 'confirmed'.",
+      "basis_options": [
+        { "value": "customer_written", "label": "Customer confirmed in writing" },
+        { "value": "customer_verbal", "label": "Customer confirmed verbally" },
+        { "value": "drawings", "label": "Shown on drawings / plans" },
+        { "value": "photos", "label": "Visible in supplied photos" },
+        { "value": "prior_work", "label": "Prior work at this site" },
+        { "value": "subcontractor", "label": "Subcontractor confirmed" }
+      ]
+    },
+    "walked": {
+      "label": "Observed - site walked",
+      "intro": "This project was site walked. Each item is recorded as observed on the walk, or flagged as not actually verified during it. Do not mark something observed because it seems obvious - only if it was seen.",
+      "item_prompt": "Was this observed during the walk?",
+      "options": [
+        { "value": "observed", "label": "Observed on the walk", "requires_basis": true },
+        { "value": "assumed", "label": "Not observed - assumed" },
+        { "value": "unverified", "label": "Not observed - carry as open item" }
+      ],
+      "basis_prompt": "What was actually seen?",
+      "basis_help": "The observation itself, in the words you would use to defend the price. 'Existing 2in EMT runs the length of the north wall with pull string in place.'",
+      "basis_options": []
+    }
+  },
+  "standing_questions": {
+    "not_walked": [
+      {
+        "id": "std_ceiling_construction",
+        "prompt": "What ceiling construction is assumed throughout?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_pathway_availability",
+        "prompt": "What is assumed about existing pathways - conduit, tray, J-hooks, riser capacity?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_idf_locations",
+        "prompt": "What is assumed about IDF/MDF locations, rack space and power at each?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_existing_infrastructure",
+        "prompt": "What existing infrastructure is assumed serviceable and reused?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_asbestos",
+        "prompt": "Are there any known hazardous material, asbestos or abatement considerations?",
+        "type": "select",
+        "required": true,
+        "taggable": true,
+        "options": [
+          { "value": "none_known", "label": "None known" },
+          { "value": "present", "label": "Known present - handled by others" },
+          { "value": "unknown", "label": "Unknown - not surveyed" }
+        ]
+      },
+      {
+        "id": "std_count_basis",
+        "prompt": "Where did the device counts come from?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true,
+        "help": "If the counts came off a drawing or a conversation rather than a walk, the document has to say that."
+      }
+    ],
+    "walked": [
+      {
+        "id": "std_obs_ceiling_construction",
+        "prompt": "What ceiling construction was observed, and where does it change?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_obs_pathways",
+        "prompt": "What existing pathways were observed - conduit, tray, J-hooks, riser capacity, fill?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_obs_idf",
+        "prompt": "What was observed at each IDF/MDF - rack space, power, switch capacity, condition?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_obs_obstructions",
+        "prompt": "What obstructions or access problems were observed?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true,
+        "help": "Racking, hard lids, low clearance, live production areas, tenant restrictions."
+      },
+      {
+        "id": "std_obs_existing_equipment",
+        "prompt": "What existing security equipment was observed, and what is its condition?",
+        "type": "longtext",
+        "required": true,
+        "taggable": true
+      },
+      {
+        "id": "std_obs_site_conditions",
+        "prompt": "Anything else observed that affects price or schedule?",
+        "type": "longtext",
+        "required": false,
+        "taggable": true
+      }
+    ]
+  }
+}

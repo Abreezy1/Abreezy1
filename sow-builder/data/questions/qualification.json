@@ -1,0 +1,277 @@
+{
+  "stage": "qualification",
+  "title": "Qualification gate",
+  "intro": "Answer this block before anything else. These answers decide whether the document that comes out is an observed-conditions scope or a provisional scope carrying an assumptions block.",
+  "questions": [
+    {
+      "id": "client_name",
+      "prompt": "Client / account name",
+      "type": "text",
+      "required": true,
+      "taggable": false
+    },
+    {
+      "id": "project_name",
+      "prompt": "Project name",
+      "type": "text",
+      "required": true,
+      "taggable": false
+    },
+    {
+      "id": "site_address",
+      "prompt": "Site address or location description",
+      "type": "text",
+      "required": true,
+      "taggable": false
+    },
+    {
+      "id": "site_type",
+      "prompt": "What kind of site is this?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "allow_other": true,
+      "options": [
+        { "value": "warehouse", "label": "Warehouse / distribution" },
+        { "value": "retail", "label": "Retail" },
+        { "value": "office", "label": "Office / corporate" },
+        { "value": "warehouse_retail", "label": "Mixed warehouse / retail" },
+        { "value": "manufacturing", "label": "Manufacturing / industrial" },
+        { "value": "multi_tenant", "label": "Multi-tenant / property management" },
+        { "value": "healthcare", "label": "Healthcare" },
+        { "value": "education", "label": "Education" },
+        { "value": "exterior_yard", "label": "Exterior / yard / lot" }
+      ]
+    },
+    {
+      "id": "site_walked",
+      "prompt": "Has this project been site walked?",
+      "help": "This is a hard branch. If no, every condition in the document is an assumption until proven otherwise, and the document will say so.",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "gate": "path",
+      "options": [
+        { "value": "yes", "label": "Yes - site walk completed" },
+        { "value": "no", "label": "No - not walked" }
+      ]
+    },
+    {
+      "id": "site_walk_date",
+      "prompt": "When was the site walk performed?",
+      "type": "date",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walked", "equals": "yes" }
+    },
+    {
+      "id": "site_walk_attendees",
+      "prompt": "Who attended the site walk?",
+      "help": "Names and companies. This goes into the document as the basis for the observed conditions.",
+      "type": "text",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walked", "equals": "yes" }
+    },
+    {
+      "id": "site_walk_coverage",
+      "prompt": "Was the entire site walked, or only part of it?",
+      "help": "Partial walks are the dangerous case - half the document is observed and half is assumed. Be honest here.",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walked", "equals": "yes" },
+      "options": [
+        { "value": "full", "label": "Full site, all areas in scope" },
+        { "value": "partial", "label": "Partial - some areas not accessed" },
+        { "value": "exterior_only", "label": "Exterior only" }
+      ]
+    },
+    {
+      "id": "site_walk_gaps",
+      "prompt": "Which areas were not accessed, and why?",
+      "type": "longtext",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walk_coverage", "in": ["partial", "exterior_only"] }
+    },
+    {
+      "id": "site_walk_planned",
+      "prompt": "Is a site walk planned before this scope is executed?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walked", "equals": "no" },
+      "options": [
+        { "value": "scheduled", "label": "Yes - scheduled" },
+        { "value": "requested", "label": "Requested, not yet scheduled" },
+        { "value": "not_planned", "label": "No walk planned" }
+      ]
+    },
+    {
+      "id": "site_walk_planned_date",
+      "prompt": "When is the site walk scheduled for?",
+      "type": "date",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walk_planned", "equals": "scheduled" }
+    },
+    {
+      "id": "info_basis",
+      "prompt": "What is this scope based on, if not a walk?",
+      "type": "multiselect",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "site_walked", "equals": "no" },
+      "options": [
+        { "value": "floor_plan", "label": "Floor plans / drawings" },
+        { "value": "customer_description", "label": "Customer's verbal or written description" },
+        { "value": "photos", "label": "Photos supplied by the customer" },
+        { "value": "prior_project", "label": "A prior project at the same or similar site" },
+        { "value": "rfp", "label": "RFP / bid documents" },
+        { "value": "nothing_formal", "label": "Nothing formal - conversation only" }
+      ]
+    },
+    {
+      "id": "subcontractor_identified",
+      "prompt": "Was a subcontractor identified?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "gate": "subcontractor",
+      "options": [
+        { "value": "yes", "label": "Yes" },
+        { "value": "no", "label": "No" },
+        { "value": "not_required", "label": "Not required - self-performed" }
+      ]
+    },
+    {
+      "id": "subcontractor_name",
+      "prompt": "Which subcontractor?",
+      "type": "text",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_identified", "equals": "yes" }
+    },
+    {
+      "id": "subcontractor_scope",
+      "prompt": "What work are they assuming?",
+      "help": "Write the boundary, not the vibe. What they do, and where their work stops and ours starts.",
+      "type": "longtext",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_identified", "equals": "yes" }
+    },
+    {
+      "id": "subcontractor_quote_provided",
+      "prompt": "Was a quote provided?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_identified", "equals": "yes" },
+      "options": [
+        { "value": "yes", "label": "Yes" },
+        { "value": "no", "label": "No" }
+      ]
+    },
+    {
+      "id": "subcontractor_quote_figures",
+      "prompt": "What figures are tied to the work they're assuming?",
+      "help": "Amounts and what each covers. If the quote is broken out by line, list it that way.",
+      "type": "longtext",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_quote_provided", "equals": "yes" }
+    },
+    {
+      "id": "subcontractor_quote_date",
+      "prompt": "Date of the quote, and how long is it held?",
+      "type": "text",
+      "required": false,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_quote_provided", "equals": "yes" }
+    },
+    {
+      "id": "subcontractor_quote_basis",
+      "prompt": "What was the subcontractor's quote based on - did they walk the site themselves?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_quote_provided", "equals": "yes" },
+      "options": [
+        { "value": "walked", "label": "They walked the site" },
+        { "value": "drawings", "label": "Drawings / plans only" },
+        { "value": "our_description", "label": "Our description of the work" },
+        { "value": "unknown", "label": "Unknown" }
+      ]
+    },
+    {
+      "id": "subcontractor_quote_eta",
+      "prompt": "When will the quote be provided?",
+      "type": "text",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_quote_provided", "equals": "no" }
+    },
+    {
+      "id": "subcontractor_pricing_placeholder",
+      "prompt": "What placeholder figure, if any, is carried for their work in the meantime?",
+      "type": "text",
+      "required": false,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_quote_provided", "equals": "no" }
+    },
+    {
+      "id": "info_given_customer",
+      "prompt": "What information has already been given to the customer?",
+      "help": "Budgets, counts, dates, verbal commitments - anything they are already holding us to. Anything listed here constrains what this document can say.",
+      "type": "longtext",
+      "required": true,
+      "taggable": false
+    },
+    {
+      "id": "info_given_subcontractor",
+      "prompt": "What information has already been given to the subcontractor?",
+      "type": "longtext",
+      "required": true,
+      "taggable": false,
+      "show_if": { "field": "subcontractor_identified", "equals": "yes" }
+    },
+    {
+      "id": "commitments_made",
+      "prompt": "Have any commitments been made that this scope has to honour?",
+      "help": "Pricing held, a completion date promised, a count quoted. Say so now rather than discovering it after the document goes out.",
+      "type": "longtext",
+      "required": true,
+      "taggable": false
+    },
+    {
+      "id": "target_dates",
+      "prompt": "Target start and completion dates, if known",
+      "type": "text",
+      "required": false,
+      "taggable": false
+    },
+    {
+      "id": "working_hours",
+      "prompt": "When can the work be performed?",
+      "type": "select",
+      "required": true,
+      "taggable": true,
+      "options": [
+        { "value": "normal", "label": "Normal business hours" },
+        { "value": "after_hours", "label": "After hours / evenings" },
+        { "value": "weekend", "label": "Weekends" },
+        { "value": "mixed", "label": "Mixed - some areas require off-hours" },
+        { "value": "unknown", "label": "Unknown / to be verified" }
+      ]
+    },
+    {
+      "id": "site_requirements",
+      "prompt": "Any site access requirements - badging, escorts, background checks, union labour, COI?",
+      "type": "longtext",
+      "required": true,
+      "taggable": true
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "sow-builder",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Scope-of-work builder for physical security integration projects",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test 'test/*.test.js'"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "docx": "^9.5.1",
+    "express": "^4.21.2",
+    "zod": "^4.5.4"
+  }
+}

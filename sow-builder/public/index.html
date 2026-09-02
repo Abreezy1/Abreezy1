@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SOW Builder</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>&#128203;</text></svg>" />
+</head>
+<body>
+  <header class="app">
+    <h1>SOW Builder</h1>
+    <span class="sub" id="project-label">No project open</span>
+    <span class="spacer"></span>
+    <span class="sub" id="api-status"></span>
+    <button id="btn-projects">Projects</button>
+    <button id="btn-new">New project</button>
+  </header>
+
+  <div class="layout">
+    <nav class="rail" id="rail"></nav>
+    <main id="main"></main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

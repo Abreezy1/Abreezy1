@@ -1,0 +1,2338 @@
+{
+  "version": "2026.09.1",
+  "notes": "Equipment tree, SKUs and the per-unit question bank. Application code must never hardcode a SKU, a question or a BOM rule - everything the interrogation asks about a piece of equipment is defined here.",
+  "question_sets": {
+    "mounting": {
+      "label": "Mounting",
+      "questions": [
+        {
+          "id": "mount_type",
+          "prompt": "What mount type is required?",
+          "help": "Drives the bracket and any adapter plate. If it varies across units of this SKU, split them into separate groups.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "wall",
+              "label": "Wall"
+            },
+            {
+              "value": "ceiling",
+              "label": "Ceiling (surface)"
+            },
+            {
+              "value": "pendant",
+              "label": "Pendant / drop"
+            },
+            {
+              "value": "corner",
+              "label": "Corner"
+            },
+            {
+              "value": "pole",
+              "label": "Pole"
+            },
+            {
+              "value": "recessed",
+              "label": "Recessed / in-ceiling"
+            }
+          ]
+        },
+        {
+          "id": "mount_surface",
+          "prompt": "What is the mounting surface?",
+          "help": "Determines anchors, backing and whether an adapter is needed.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "drywall",
+              "label": "Drywall / gypsum"
+            },
+            {
+              "value": "concrete",
+              "label": "Concrete / masonry / block"
+            },
+            {
+              "value": "drop_ceiling",
+              "label": "Drop ceiling tile (T-bar grid)"
+            },
+            {
+              "value": "hard_lid",
+              "label": "Hard lid / plaster ceiling"
+            },
+            {
+              "value": "metal_deck",
+              "label": "Metal deck / open structure"
+            },
+            {
+              "value": "wood",
+              "label": "Wood framing / plywood backing"
+            },
+            {
+              "value": "glass",
+              "label": "Glass / curtain wall"
+            },
+            {
+              "value": "exterior_stucco",
+              "label": "Exterior stucco / EIFS"
+            },
+            {
+              "value": "exterior_metal",
+              "label": "Exterior metal panel"
+            },
+            {
+              "value": "pole_surface",
+              "label": "Pole / structure (exterior)"
+            }
+          ]
+        },
+        {
+          "id": "adapter_required",
+          "prompt": "Is an adapter plate, back box or arm required on top of the base mount?",
+          "help": "Drop ceiling, metal deck and pole mounts almost always need one. Say 'unknown' rather than guessing - unknown flows into the assumptions block.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No - base mount is sufficient"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "adapter_part",
+          "prompt": "Which adapter / arm part number?",
+          "type": "text",
+          "required": false,
+          "show_if": {
+            "field": "adapter_required",
+            "equals": "yes"
+          }
+        },
+        {
+          "id": "mount_sourcing",
+          "prompt": "Where is the mounting hardware coming from?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "customer stock",
+              "label": "Customer already has it in stock"
+            },
+            {
+              "value": "our stock",
+              "label": "We supply from our stock"
+            },
+            {
+              "value": "to be ordered",
+              "label": "Must be ordered"
+            }
+          ]
+        },
+        {
+          "id": "mount_lead_time",
+          "prompt": "What lead time has been quoted on the mounting hardware?",
+          "type": "text",
+          "required": false,
+          "show_if": {
+            "field": "mount_sourcing",
+            "equals": "to be ordered"
+          }
+        },
+        {
+          "id": "mount_height_ft",
+          "prompt": "Mounting height above finished floor / grade (ft)?",
+          "type": "number",
+          "required": true,
+          "min": 0,
+          "max": 120
+        },
+        {
+          "id": "lift_required",
+          "prompt": "What access equipment is needed to reach that height?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "none",
+              "label": "None - ladder only"
+            },
+            {
+              "value": "scissor",
+              "label": "Scissor lift"
+            },
+            {
+              "value": "boom",
+              "label": "Boom lift"
+            },
+            {
+              "value": "scaffold",
+              "label": "Scaffold"
+            },
+            {
+              "value": "bucket",
+              "label": "Bucket truck"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "lift_sourcing",
+          "prompt": "Who provides the lift?",
+          "type": "select",
+          "required": true,
+          "show_if": {
+            "field": "lift_required",
+            "not_in": [
+              "none",
+              "unknown"
+            ]
+          },
+          "options": [
+            {
+              "value": "customer stock",
+              "label": "Customer provides on site"
+            },
+            {
+              "value": "our stock",
+              "label": "We provide from our fleet"
+            },
+            {
+              "value": "to be ordered",
+              "label": "Rental - to be ordered"
+            }
+          ]
+        }
+      ]
+    },
+    "cabling": {
+      "label": "Cable & pathway",
+      "questions": [
+        {
+          "id": "cable_status",
+          "prompt": "Is this a new cable run or reuse of existing cable?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "new",
+              "label": "New run"
+            },
+            {
+              "value": "reuse",
+              "label": "Reuse existing cable in place"
+            },
+            {
+              "value": "reterminate",
+              "label": "Existing cable - reterminate / test only"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "cable_type",
+          "prompt": "Cable type?",
+          "type": "select",
+          "required": true,
+          "show_if": {
+            "field": "cable_status",
+            "not_equals": "reuse"
+          },
+          "options": [
+            {
+              "value": "cat6",
+              "label": "Cat6 riser"
+            },
+            {
+              "value": "cat6_plenum",
+              "label": "Cat6 plenum"
+            },
+            {
+              "value": "cat6a",
+              "label": "Cat6a"
+            },
+            {
+              "value": "fiber_mm",
+              "label": "Multimode fiber + media converter"
+            },
+            {
+              "value": "composite",
+              "label": "Composite (data + power)"
+            }
+          ]
+        },
+        {
+          "id": "cable_length_ft",
+          "prompt": "Estimated cable run length per unit (ft)?",
+          "help": "Measured path, not straight-line. Runs over 295 ft need a midspan or fiber - the tool will flag it.",
+          "type": "number",
+          "required": true,
+          "show_if": {
+            "field": "cable_status",
+            "not_equals": "reuse"
+          },
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "id": "cable_pathway",
+          "prompt": "What pathway does the cable follow?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "existing_tray",
+              "label": "Existing cable tray / J-hooks"
+            },
+            {
+              "value": "existing_conduit",
+              "label": "Existing conduit"
+            },
+            {
+              "value": "open_plenum",
+              "label": "Open plenum / above accessible ceiling"
+            },
+            {
+              "value": "new_conduit",
+              "label": "New conduit required"
+            },
+            {
+              "value": "surface_raceway",
+              "label": "Surface raceway"
+            },
+            {
+              "value": "underground",
+              "label": "Underground / directional bore"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "conduit_length_ft",
+          "prompt": "How much new conduit per unit (ft), and what type?",
+          "type": "number",
+          "required": true,
+          "show_if": {
+            "field": "cable_pathway",
+            "in": [
+              "new_conduit",
+              "underground"
+            ]
+          },
+          "min": 0,
+          "max": 5000
+        },
+        {
+          "id": "conduit_type",
+          "prompt": "Conduit type?",
+          "type": "select",
+          "required": true,
+          "show_if": {
+            "field": "cable_pathway",
+            "in": [
+              "new_conduit",
+              "underground"
+            ]
+          },
+          "options": [
+            {
+              "value": "emt",
+              "label": "EMT"
+            },
+            {
+              "value": "rigid",
+              "label": "Rigid / IMC"
+            },
+            {
+              "value": "pvc",
+              "label": "PVC (underground)"
+            },
+            {
+              "value": "flex",
+              "label": "Flexible / liquidtight"
+            }
+          ]
+        },
+        {
+          "id": "core_drill_required",
+          "prompt": "Is any core drilling or penetration of a rated assembly required?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "no",
+              "label": "No"
+            },
+            {
+              "value": "yes_core",
+              "label": "Yes - core drill"
+            },
+            {
+              "value": "yes_rated",
+              "label": "Yes - fire-rated wall / floor penetration"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "termination_point",
+          "prompt": "Where does this run terminate (IDF / MDF / closet name)?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "ceiling_access",
+          "prompt": "Is the ceiling accessible along the full path?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes - accessible throughout"
+            },
+            {
+              "value": "partial",
+              "label": "Partially - some hard lid / obstructions"
+            },
+            {
+              "value": "no",
+              "label": "No - hard lid or no ceiling access"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        }
+      ]
+    },
+    "power_network": {
+      "label": "Power & network",
+      "questions": [
+        {
+          "id": "power_method",
+          "prompt": "How is the device powered?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "poe_switch",
+              "label": "PoE from switch (802.3af)"
+            },
+            {
+              "value": "poe_plus",
+              "label": "PoE+ from switch (802.3at)"
+            },
+            {
+              "value": "poe_injector",
+              "label": "PoE injector / midspan"
+            },
+            {
+              "value": "local_120v",
+              "label": "Local 120V outlet"
+            },
+            {
+              "value": "low_voltage_psu",
+              "label": "Low-voltage power supply / transformer"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "switch_capacity_confirmed",
+          "prompt": "Have available switch ports and PoE budget been confirmed?",
+          "type": "select",
+          "required": true,
+          "show_if": {
+            "field": "power_method",
+            "in": [
+              "poe_switch",
+              "poe_plus"
+            ]
+          },
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes - ports and budget confirmed"
+            },
+            {
+              "value": "no",
+              "label": "No - not yet confirmed"
+            },
+            {
+              "value": "customer_responsibility",
+              "label": "Customer is responsible for switch capacity"
+            }
+          ]
+        },
+        {
+          "id": "switch_provided_by",
+          "prompt": "Who provides the switch / head-end network?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "customer",
+              "label": "Customer IT"
+            },
+            {
+              "value": "us",
+              "label": "We supply"
+            },
+            {
+              "value": "subcontractor",
+              "label": "Subcontractor"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "outlet_present",
+          "prompt": "Is a 120V outlet present within reach of the device?",
+          "type": "select",
+          "required": true,
+          "show_if": {
+            "field": "power_method",
+            "in": [
+              "local_120v",
+              "poe_injector",
+              "low_voltage_psu"
+            ]
+          },
+          "options": [
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No - electrician required"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        }
+      ]
+    },
+    "environment": {
+      "label": "Environment",
+      "questions": [
+        {
+          "id": "install_environment",
+          "prompt": "Indoor or outdoor?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "indoor",
+              "label": "Indoor - conditioned"
+            },
+            {
+              "value": "indoor_unconditioned",
+              "label": "Indoor - unconditioned (warehouse / garage)"
+            },
+            {
+              "value": "outdoor",
+              "label": "Outdoor - exposed"
+            },
+            {
+              "value": "outdoor_covered",
+              "label": "Outdoor - covered / soffit"
+            }
+          ]
+        },
+        {
+          "id": "environmental_hardening",
+          "prompt": "Any environmental hardening required?",
+          "type": "multiselect",
+          "required": false,
+          "options": [
+            {
+              "value": "heater_blower",
+              "label": "Heater / blower housing"
+            },
+            {
+              "value": "vandal",
+              "label": "Vandal-resistant housing"
+            },
+            {
+              "value": "wash_down",
+              "label": "Wash-down / IP69K"
+            },
+            {
+              "value": "corrosive",
+              "label": "Corrosive environment (coastal / chemical)"
+            },
+            {
+              "value": "none",
+              "label": "None"
+            }
+          ]
+        }
+      ]
+    },
+    "door_hardware": {
+      "label": "Door & hardware",
+      "questions": [
+        {
+          "id": "door_type",
+          "prompt": "Door type and material?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "hollow_metal",
+              "label": "Hollow metal in metal frame"
+            },
+            {
+              "value": "wood",
+              "label": "Wood in metal frame"
+            },
+            {
+              "value": "aluminum_glass",
+              "label": "Aluminum storefront / glass"
+            },
+            {
+              "value": "herculite",
+              "label": "Herculite / full glass"
+            },
+            {
+              "value": "overhead",
+              "label": "Overhead / roll-up"
+            },
+            {
+              "value": "gate",
+              "label": "Gate / turnstile"
+            }
+          ]
+        },
+        {
+          "id": "locking_hardware",
+          "prompt": "What locking hardware is being used?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "electric_strike",
+              "label": "Electric strike"
+            },
+            {
+              "value": "mag_lock",
+              "label": "Magnetic lock"
+            },
+            {
+              "value": "electrified_lever",
+              "label": "Electrified lever / mortise"
+            },
+            {
+              "value": "electrified_exit",
+              "label": "Electrified exit device"
+            },
+            {
+              "value": "existing",
+              "label": "Existing hardware reused"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "hardware_provided_by",
+          "prompt": "Who furnishes and installs the door hardware?",
+          "help": "This is the single most common scope gap on access control jobs. Be explicit.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "us",
+              "label": "We furnish and install"
+            },
+            {
+              "value": "us_install_only",
+              "label": "Customer furnishes, we install"
+            },
+            {
+              "value": "locksmith",
+              "label": "Customer's locksmith / door vendor"
+            },
+            {
+              "value": "gc",
+              "label": "General contractor"
+            },
+            {
+              "value": "subcontractor",
+              "label": "Our subcontractor"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "door_prep_required",
+          "prompt": "Is door or frame prep (cutting, drilling, raceway) required?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "no",
+              "label": "No - existing prep is adequate"
+            },
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "rex_device",
+          "prompt": "Request-to-exit method?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "motion",
+              "label": "REX motion sensor"
+            },
+            {
+              "value": "hardware_rex",
+              "label": "Integral hardware REX switch"
+            },
+            {
+              "value": "push_button",
+              "label": "Push to exit button"
+            },
+            {
+              "value": "free_egress",
+              "label": "Free mechanical egress - none required"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "door_position_switch",
+          "prompt": "Door position switch required?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "yes_recessed",
+              "label": "Yes - recessed contact"
+            },
+            {
+              "value": "yes_surface",
+              "label": "Yes - surface contact"
+            },
+            {
+              "value": "existing",
+              "label": "Existing contact reused"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        },
+        {
+          "id": "fire_alarm_interface",
+          "prompt": "Does this door require a fire alarm interface or life-safety tie-in?",
+          "help": "Mag locks and some electrified hardware do. Tie-in work is usually the fire alarm contractor's, not ours - say so explicitly.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "no",
+              "label": "No"
+            },
+            {
+              "value": "yes_by_others",
+              "label": "Yes - by the fire alarm contractor (others)"
+            },
+            {
+              "value": "yes_by_us",
+              "label": "Yes - in our scope"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        },
+        {
+          "id": "ada_operator",
+          "prompt": "Is there an ADA / automatic operator to integrate?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "no",
+              "label": "No"
+            },
+            {
+              "value": "existing",
+              "label": "Yes - existing operator, we interface"
+            },
+            {
+              "value": "new_by_others",
+              "label": "Yes - new operator by others"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        }
+      ]
+    },
+    "commissioning": {
+      "label": "Commissioning & handover",
+      "questions": [
+        {
+          "id": "programming_scope",
+          "prompt": "What programming or configuration is in our scope for this device?",
+          "type": "multiselect",
+          "required": true,
+          "options": [
+            {
+              "value": "device_config",
+              "label": "Device configuration / addressing"
+            },
+            {
+              "value": "vms_onboarding",
+              "label": "VMS onboarding and recording setup"
+            },
+            {
+              "value": "acs_onboarding",
+              "label": "Access control system onboarding"
+            },
+            {
+              "value": "rules_schedules",
+              "label": "Rules, schedules and access levels"
+            },
+            {
+              "value": "analytics",
+              "label": "Analytics configuration"
+            },
+            {
+              "value": "none",
+              "label": "None - by others"
+            }
+          ]
+        },
+        {
+          "id": "customer_training",
+          "prompt": "Is end-user training included for this system?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "yes_onsite",
+              "label": "Yes - on-site session"
+            },
+            {
+              "value": "yes_remote",
+              "label": "Yes - remote session"
+            },
+            {
+              "value": "no",
+              "label": "No"
+            }
+          ]
+        }
+      ]
+    },
+    "sourcing": {
+      "label": "Sourcing",
+      "questions": [
+        {
+          "id": "equipment_sourcing",
+          "prompt": "Where is the equipment itself coming from?",
+          "help": "Sourcing status prints against every bill of materials line. 'To be ordered' with an unknown lead time is a schedule risk - say so.",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "customer stock",
+              "label": "Customer already has it in stock"
+            },
+            {
+              "value": "our stock",
+              "label": "We supply from our stock"
+            },
+            {
+              "value": "to be ordered",
+              "label": "Must be ordered"
+            }
+          ]
+        },
+        {
+          "id": "equipment_lead_time",
+          "prompt": "What lead time applies, and has it been confirmed with the distributor?",
+          "type": "text",
+          "required": true,
+          "show_if": {
+            "field": "equipment_sourcing",
+            "equals": "to be ordered"
+          }
+        },
+        {
+          "id": "existing_equipment_reuse",
+          "prompt": "Is any existing equipment being reused or removed at these locations?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "none",
+              "label": "No existing equipment at these locations"
+            },
+            {
+              "value": "remove_dispose",
+              "label": "Existing equipment removed and disposed of by us"
+            },
+            {
+              "value": "remove_return",
+              "label": "Existing equipment removed and returned to the customer"
+            },
+            {
+              "value": "reuse",
+              "label": "Existing equipment stays in service"
+            },
+            {
+              "value": "unknown",
+              "label": "Unknown / to be verified"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "categories": [
+    {
+      "id": "cameras",
+      "label": "Cameras",
+      "subtypes": [
+        {
+          "id": "fisheye",
+          "label": "Fisheye",
+          "skus": [
+            {
+              "sku": "CF82",
+              "name": "CF82 12MP Fisheye",
+              "description": "12MP 360-degree fisheye camera, indoor/outdoor rated, IK10",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "environment",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "ceiling_height_ft",
+                  "prompt": "Ceiling height at each fisheye location (ft)?",
+                  "help": "Fisheye coverage falls off fast below 9 ft and above 20 ft. This drives whether the count is right at all.",
+                  "type": "number",
+                  "required": true,
+                  "min": 6,
+                  "max": 60
+                },
+                {
+                  "id": "coverage_intent",
+                  "prompt": "What is each fisheye expected to cover?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "general",
+                      "label": "General area awareness"
+                    },
+                    {
+                      "value": "identification",
+                      "label": "Facial identification"
+                    },
+                    {
+                      "value": "loss_prevention",
+                      "label": "Loss prevention / POS overwatch"
+                    },
+                    {
+                      "value": "people_counting",
+                      "label": "People counting / analytics"
+                    }
+                  ]
+                },
+                {
+                  "id": "dewarp_location",
+                  "prompt": "Where is dewarping handled?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "edge",
+                      "label": "On camera (edge)"
+                    },
+                    {
+                      "value": "client",
+                      "label": "In the VMS client"
+                    },
+                    {
+                      "value": "unknown",
+                      "label": "Unknown / to be verified"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "cf82_wall",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "wall"
+                  },
+                  "add": {
+                    "sku": "CF82-WMT",
+                    "description": "CF82 wall mount bracket",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cf82_pendant",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "pendant"
+                  },
+                  "add": {
+                    "sku": "CF82-PMT",
+                    "description": "CF82 pendant mount kit with drop pipe",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cf82_tbar",
+                  "when": {
+                    "field": "mount_surface",
+                    "equals": "drop_ceiling"
+                  },
+                  "add": {
+                    "sku": "ACC-TBAR-KIT",
+                    "description": "T-bar ceiling support kit",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cf82_backbox",
+                  "when": {
+                    "field": "install_environment",
+                    "in": [
+                      "outdoor",
+                      "outdoor_covered"
+                    ]
+                  },
+                  "add": {
+                    "sku": "ACC-BACKBOX-OD",
+                    "description": "Outdoor-rated back box / junction box",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                }
+              ]
+            },
+            {
+              "sku": "CF44",
+              "name": "CF44 6MP Fisheye",
+              "description": "6MP 360-degree fisheye camera, indoor, IK08",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "environment",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "ceiling_height_ft",
+                  "prompt": "Ceiling height at each fisheye location (ft)?",
+                  "type": "number",
+                  "required": true,
+                  "min": 6,
+                  "max": 40
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "cf44_tbar",
+                  "when": {
+                    "field": "mount_surface",
+                    "equals": "drop_ceiling"
+                  },
+                  "add": {
+                    "sku": "ACC-TBAR-KIT",
+                    "description": "T-bar ceiling support kit",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dome",
+          "label": "Dome",
+          "skus": [
+            {
+              "sku": "CM42",
+              "name": "CM42 4MP Varifocal Dome",
+              "description": "4MP varifocal dome camera, IK10 vandal resistant, IR",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "environment",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "field_of_view",
+                  "prompt": "What is each dome aimed at?",
+                  "type": "text",
+                  "required": true,
+                  "help": "One line per grouping - 'rear dock doors, aimed down the drive aisle'. This becomes the camera schedule narrative."
+                },
+                {
+                  "id": "ir_required",
+                  "prompt": "Is IR illumination relied on at this location?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "yes",
+                      "label": "Yes - no reliable ambient light"
+                    },
+                    {
+                      "value": "no",
+                      "label": "No - ambient light adequate"
+                    },
+                    {
+                      "value": "supplemental",
+                      "label": "Supplemental illuminator required"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "cm42_wall",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "wall"
+                  },
+                  "add": {
+                    "sku": "CM42-WMT",
+                    "description": "CM42 wall mount arm",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cm42_corner",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "corner"
+                  },
+                  "add": {
+                    "sku": "ACC-CORNER-ADPT",
+                    "description": "Corner mount adapter",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cm42_pole",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "pole"
+                  },
+                  "add": {
+                    "sku": "ACC-POLE-ADPT",
+                    "description": "Pole mount adapter with banding",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cm42_pendant",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "pendant"
+                  },
+                  "add": {
+                    "sku": "CM42-PMT",
+                    "description": "CM42 pendant cap and drop pipe",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cm42_illum",
+                  "when": {
+                    "field": "ir_required",
+                    "equals": "supplemental"
+                  },
+                  "add": {
+                    "sku": "ACC-IR-ILLUM",
+                    "description": "Supplemental IR illuminator",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bullet",
+          "label": "Bullet",
+          "skus": [
+            {
+              "sku": "CB61",
+              "name": "CB61 5MP Bullet",
+              "description": "5MP outdoor bullet camera with integrated sun shield and IR",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "environment",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "field_of_view",
+                  "prompt": "What is each bullet aimed at?",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "aiming_distance_ft",
+                  "prompt": "Approximate distance to the subject / target area (ft)?",
+                  "type": "number",
+                  "required": true,
+                  "min": 0,
+                  "max": 1000
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "cb61_pole",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "pole"
+                  },
+                  "add": {
+                    "sku": "ACC-POLE-ADPT",
+                    "description": "Pole mount adapter with banding",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cb61_jbox",
+                  "when": {
+                    "field": "install_environment",
+                    "in": [
+                      "outdoor",
+                      "outdoor_covered"
+                    ]
+                  },
+                  "add": {
+                    "sku": "ACC-BACKBOX-OD",
+                    "description": "Outdoor-rated back box / junction box",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lpr",
+          "label": "LPR",
+          "skus": [
+            {
+              "sku": "CL90",
+              "name": "CL90 LPR Camera",
+              "description": "License plate recognition camera with integrated IR, 10-60mm",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "environment",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "lane_count",
+                  "prompt": "How many lanes does each LPR camera cover?",
+                  "help": "One camera per lane is the safe assumption. Multi-lane coverage degrades plate capture.",
+                  "type": "number",
+                  "required": true,
+                  "min": 1,
+                  "max": 6
+                },
+                {
+                  "id": "capture_distance_ft",
+                  "prompt": "Capture distance to the plate (ft)?",
+                  "type": "number",
+                  "required": true,
+                  "min": 5,
+                  "max": 300
+                },
+                {
+                  "id": "vehicle_speed",
+                  "prompt": "Expected vehicle speed at the capture point?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "stopped",
+                      "label": "Stopped (gate / barrier)"
+                    },
+                    {
+                      "value": "slow",
+                      "label": "Under 15 mph"
+                    },
+                    {
+                      "value": "moderate",
+                      "label": "15-35 mph"
+                    },
+                    {
+                      "value": "fast",
+                      "label": "Over 35 mph"
+                    }
+                  ]
+                },
+                {
+                  "id": "lpr_integration",
+                  "prompt": "What is the plate data integrating with?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "vms_only",
+                      "label": "VMS search only"
+                    },
+                    {
+                      "value": "access_control",
+                      "label": "Access control (gate release)"
+                    },
+                    {
+                      "value": "third_party",
+                      "label": "Third-party / customer system"
+                    },
+                    {
+                      "value": "unknown",
+                      "label": "Unknown / to be verified"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "cl90_pole",
+                  "when": {
+                    "field": "mount_type",
+                    "equals": "pole"
+                  },
+                  "add": {
+                    "sku": "ACC-POLE-ADPT",
+                    "description": "Pole mount adapter with banding",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                },
+                {
+                  "id": "cl90_jbox",
+                  "when": {
+                    "field": "install_environment",
+                    "in": [
+                      "outdoor",
+                      "outdoor_covered"
+                    ]
+                  },
+                  "add": {
+                    "sku": "ACC-BACKBOX-OD",
+                    "description": "Outdoor-rated back box / junction box",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "mount_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "access_control",
+      "label": "Access control",
+      "subtypes": [
+        {
+          "id": "controllers",
+          "label": "Door controllers",
+          "skus": [
+            {
+              "sku": "AC-4D",
+              "name": "AC-4D Four Door Controller",
+              "description": "Four-door IP access controller with enclosure and power supply",
+              "unit": "each",
+              "question_sets": [
+                "cabling",
+                "power_network",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "doors_served",
+                  "prompt": "How many doors does each controller serve on this project?",
+                  "type": "number",
+                  "required": true,
+                  "min": 1,
+                  "max": 4
+                },
+                {
+                  "id": "enclosure_location",
+                  "prompt": "Where is the enclosure mounted?",
+                  "type": "text",
+                  "required": true,
+                  "help": "IDF name / room. Distance from enclosure to the furthest door drives cable footage."
+                },
+                {
+                  "id": "battery_backup",
+                  "prompt": "Battery backup required?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "yes",
+                      "label": "Yes - included"
+                    },
+                    {
+                      "value": "existing",
+                      "label": "Existing UPS / backup in place"
+                    },
+                    {
+                      "value": "no",
+                      "label": "No"
+                    }
+                  ]
+                },
+                {
+                  "id": "network_drop_present",
+                  "prompt": "Is a network drop present at the enclosure?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "yes",
+                      "label": "Yes"
+                    },
+                    {
+                      "value": "no",
+                      "label": "No - we run it"
+                    },
+                    {
+                      "value": "by_customer",
+                      "label": "No - customer IT provides"
+                    },
+                    {
+                      "value": "unknown",
+                      "label": "Unknown / to be verified"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "ac4d_batt",
+                  "when": {
+                    "field": "battery_backup",
+                    "equals": "yes"
+                  },
+                  "add": {
+                    "sku": "ACC-BATT-12V7",
+                    "description": "12V 7Ah sealed battery",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 2,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "readers",
+          "label": "Readers",
+          "skus": [
+            {
+              "sku": "RD-MULT",
+              "name": "RD-MULT Multi-Technology Reader",
+              "description": "Multi-technology smart card reader, mullion or single-gang",
+              "unit": "each",
+              "question_sets": [
+                "door_hardware",
+                "cabling",
+                "power_network",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "reader_form_factor",
+                  "prompt": "Reader form factor?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "mullion",
+                      "label": "Mullion"
+                    },
+                    {
+                      "value": "single_gang",
+                      "label": "Single gang"
+                    },
+                    {
+                      "value": "keypad",
+                      "label": "Reader with keypad"
+                    }
+                  ]
+                },
+                {
+                  "id": "credential_technology",
+                  "prompt": "What credential technology is in use?",
+                  "type": "multiselect",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "existing_prox",
+                      "label": "Existing 125kHz prox (migrating)"
+                    },
+                    {
+                      "value": "smart_card",
+                      "label": "13.56MHz smart card"
+                    },
+                    {
+                      "value": "mobile",
+                      "label": "Mobile credential / BLE"
+                    },
+                    {
+                      "value": "pin",
+                      "label": "PIN"
+                    },
+                    {
+                      "value": "biometric",
+                      "label": "Biometric"
+                    }
+                  ]
+                },
+                {
+                  "id": "existing_wiring_reuse",
+                  "prompt": "Is existing reader wiring being reused?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "yes_tested",
+                      "label": "Yes - tested and confirmed good"
+                    },
+                    {
+                      "value": "yes_untested",
+                      "label": "Yes - assumed good, not tested"
+                    },
+                    {
+                      "value": "no",
+                      "label": "No - new wire"
+                    },
+                    {
+                      "value": "unknown",
+                      "label": "Unknown / to be verified"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "rd_dps_rec",
+                  "when": {
+                    "field": "door_position_switch",
+                    "equals": "yes_recessed"
+                  },
+                  "add": {
+                    "sku": "DC-REC",
+                    "description": "Recessed door contact",
+                    "category": "Alarms & sensors",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                },
+                {
+                  "id": "rd_dps_surf",
+                  "when": {
+                    "field": "door_position_switch",
+                    "equals": "yes_surface"
+                  },
+                  "add": {
+                    "sku": "DC-SURF",
+                    "description": "Surface mount door contact",
+                    "category": "Alarms & sensors",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                },
+                {
+                  "id": "rd_rex",
+                  "when": {
+                    "field": "rex_device",
+                    "equals": "motion"
+                  },
+                  "add": {
+                    "sku": "ACC-REX-PIR",
+                    "description": "Request-to-exit PIR sensor",
+                    "category": "Alarms & sensors",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                },
+                {
+                  "id": "rd_pte",
+                  "when": {
+                    "field": "rex_device",
+                    "equals": "push_button"
+                  },
+                  "add": {
+                    "sku": "ACC-PTE-BTN",
+                    "description": "Push-to-exit button",
+                    "category": "Alarms & sensors",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                },
+                {
+                  "id": "rd_strike",
+                  "when": {
+                    "all": [
+                      {
+                        "field": "locking_hardware",
+                        "equals": "electric_strike"
+                      },
+                      {
+                        "field": "hardware_provided_by",
+                        "in": [
+                          "us",
+                          "subcontractor"
+                        ]
+                      }
+                    ]
+                  },
+                  "add": {
+                    "sku": "HW-STRIKE",
+                    "description": "Electric strike (model per door schedule)",
+                    "category": "Door hardware",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                },
+                {
+                  "id": "rd_mag",
+                  "when": {
+                    "all": [
+                      {
+                        "field": "locking_hardware",
+                        "equals": "mag_lock"
+                      },
+                      {
+                        "field": "hardware_provided_by",
+                        "in": [
+                          "us",
+                          "subcontractor"
+                        ]
+                      }
+                    ]
+                  },
+                  "add": {
+                    "sku": "HW-MAG-1200",
+                    "description": "1200lb magnetic lock with mounting brackets",
+                    "category": "Door hardware",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alarms_sensors",
+      "label": "Alarms & sensors",
+      "subtypes": [
+        {
+          "id": "contacts",
+          "label": "Door contacts",
+          "skus": [
+            {
+              "sku": "DC-SURF",
+              "name": "Surface Mount Door Contact",
+              "description": "Surface mount magnetic door contact, wide gap",
+              "unit": "each",
+              "question_sets": [
+                "cabling",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "contact_door_material",
+                  "prompt": "Door and frame material?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "steel",
+                      "label": "Steel / hollow metal (wide gap required)"
+                    },
+                    {
+                      "value": "aluminum",
+                      "label": "Aluminum storefront"
+                    },
+                    {
+                      "value": "wood",
+                      "label": "Wood"
+                    },
+                    {
+                      "value": "overhead",
+                      "label": "Overhead / roll-up (armored)"
+                    }
+                  ]
+                },
+                {
+                  "id": "monitoring_destination",
+                  "prompt": "What monitors this contact?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "acs",
+                      "label": "Access control system input"
+                    },
+                    {
+                      "value": "alarm_panel",
+                      "label": "Intrusion alarm panel"
+                    },
+                    {
+                      "value": "both",
+                      "label": "Both"
+                    },
+                    {
+                      "value": "unknown",
+                      "label": "Unknown / to be verified"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": [
+                {
+                  "id": "dc_armored",
+                  "when": {
+                    "field": "contact_door_material",
+                    "equals": "overhead"
+                  },
+                  "add": {
+                    "sku": "ACC-ARMOR-LOOP",
+                    "description": "Armored cable loop for overhead door contact",
+                    "category": "Mounts & accessories",
+                    "qty_per_unit": 1,
+                    "sourcing_from": "equipment_sourcing"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "motion_environmental",
+          "label": "Motion / environmental",
+          "skus": [
+            {
+              "sku": "MS-PIR",
+              "name": "Dual-Tech Motion Sensor",
+              "description": "Dual technology PIR / microwave motion detector",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "coverage_area",
+                  "prompt": "What area is each sensor covering?",
+                  "type": "text",
+                  "required": true
+                },
+                {
+                  "id": "pet_immunity",
+                  "prompt": "Is pet / forklift immunity required?",
+                  "type": "select",
+                  "required": true,
+                  "options": [
+                    {
+                      "value": "yes",
+                      "label": "Yes"
+                    },
+                    {
+                      "value": "no",
+                      "label": "No"
+                    }
+                  ]
+                }
+              ],
+              "bom_rules": []
+            },
+            {
+              "sku": "ES-TEMP",
+              "name": "Temperature / Water Sensor",
+              "description": "Environmental sensor - temperature and water detection with dry contact output",
+              "unit": "each",
+              "question_sets": [
+                "mounting",
+                "cabling",
+                "power_network",
+                "commissioning"
+              ],
+              "questions": [
+                {
+                  "id": "sensor_purpose",
+                  "prompt": "What is being monitored and what triggers an alarm?",
+                  "type": "longtext",
+                  "required": true
+                }
+              ],
+              "bom_rules": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "global_bom_rules": [
+    {
+      "id": "cable_run_new",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "all": [
+          {
+            "field": "cable_status",
+            "in": [
+              "new"
+            ]
+          },
+          {
+            "field": "cable_type",
+            "in": [
+              "cat6",
+              "cat6_plenum",
+              "cat6a"
+            ]
+          }
+        ]
+      },
+      "add": {
+        "sku_from": {
+          "cat6": "CBL-CAT6",
+          "cat6_plenum": "CBL-CAT6-PLN",
+          "cat6a": "CBL-CAT6A",
+          "_field": "cable_type"
+        },
+        "description": "Structured cable - {cable_type_label}",
+        "category": "Cabling & consumables",
+        "unit": "ft",
+        "qty_from_field": "cable_length_ft",
+        "per_unit": true,
+        "waste_factor": 1.1,
+        "sourcing_from": null
+      }
+    },
+    {
+      "id": "cable_run_fiber",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "all": [
+          {
+            "field": "cable_status",
+            "equals": "new"
+          },
+          {
+            "field": "cable_type",
+            "equals": "fiber_mm"
+          }
+        ]
+      },
+      "add": {
+        "sku": "CBL-FIBER-MM",
+        "description": "Multimode fiber",
+        "category": "Cabling & consumables",
+        "unit": "ft",
+        "qty_from_field": "cable_length_ft",
+        "per_unit": true,
+        "waste_factor": 1.15
+      }
+    },
+    {
+      "id": "media_converter",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "cable_type",
+        "equals": "fiber_mm"
+      },
+      "add": {
+        "sku": "ACC-MEDIA-CONV",
+        "description": "Fiber media converter (pair)",
+        "category": "Mounts & accessories",
+        "qty_per_unit": 1
+      }
+    },
+    {
+      "id": "conduit",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "cable_pathway",
+        "in": [
+          "new_conduit",
+          "underground"
+        ]
+      },
+      "add": {
+        "sku": "CND-GEN",
+        "description": "Conduit and fittings",
+        "category": "Cabling & consumables",
+        "unit": "ft",
+        "qty_from_field": "conduit_length_ft",
+        "per_unit": true,
+        "waste_factor": 1.05
+      }
+    },
+    {
+      "id": "firestop",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "core_drill_required",
+        "equals": "yes_rated"
+      },
+      "add": {
+        "sku": "CON-FIRESTOP",
+        "description": "Fire-stopping materials for rated penetrations",
+        "category": "Cabling & consumables",
+        "qty_per_unit": 1
+      }
+    },
+    {
+      "id": "poe_injector",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "power_method",
+        "equals": "poe_injector"
+      },
+      "add": {
+        "sku": "ACC-POE-INJ",
+        "description": "PoE injector / midspan",
+        "category": "Mounts & accessories",
+        "qty_per_unit": 1
+      }
+    },
+    {
+      "id": "psu",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "power_method",
+        "equals": "low_voltage_psu"
+      },
+      "add": {
+        "sku": "ACC-PSU-LV",
+        "description": "Low-voltage power supply / transformer",
+        "category": "Mounts & accessories",
+        "qty_per_unit": 1
+      }
+    },
+    {
+      "id": "termination_consumables",
+      "applies_to_categories": [
+        "cameras",
+        "access_control",
+        "alarms_sensors"
+      ],
+      "when": {
+        "field": "cable_status",
+        "in": [
+          "new",
+          "reterminate"
+        ]
+      },
+      "add": {
+        "sku": "CON-TERM-KIT",
+        "description": "Terminations, jacks, patch cords and misc. consumables",
+        "category": "Cabling & consumables",
+        "qty_per_unit": 1
+      }
+    }
+  ],
+  "flags": [
+    {
+      "id": "cable_over_distance",
+      "when": {
+        "all": [
+          {
+            "field": "cable_type",
+            "in": [
+              "cat6",
+              "cat6_plenum",
+              "cat6a"
+            ]
+          },
+          {
+            "field": "cable_length_ft",
+            "gt": 295
+          }
+        ]
+      },
+      "severity": "blocking",
+      "message": "Copper run exceeds 295 ft. An extender, midspan or fiber path is required - the BOM will not be correct until this is resolved."
+    },
+    {
+      "id": "unknown_pathway",
+      "when": {
+        "field": "cable_pathway",
+        "equals": "unknown"
+      },
+      "severity": "assumption",
+      "message": "Cable pathway is unknown. Pricing assumes an accessible pathway; this is carried as an assumption."
+    },
+    {
+      "id": "unknown_ceiling_access",
+      "when": {
+        "field": "ceiling_access",
+        "in": [
+          "no",
+          "unknown",
+          "partial"
+        ]
+      },
+      "severity": "assumption",
+      "message": "Ceiling access is limited or unverified. Additional labour may be required for hard-lid or obstructed sections."
+    },
+    {
+      "id": "lift_unknown",
+      "when": {
+        "field": "lift_required",
+        "equals": "unknown"
+      },
+      "severity": "assumption",
+      "message": "Access equipment requirement is unverified. Lift cost is not carried in this scope."
+    },
+    {
+      "id": "high_mount_no_lift",
+      "when": {
+        "all": [
+          {
+            "field": "mount_height_ft",
+            "gt": 14
+          },
+          {
+            "field": "lift_required",
+            "equals": "none"
+          }
+        ]
+      },
+      "severity": "review",
+      "message": "Mount height is above 14 ft but no lift is scoped. Confirm ladder access is genuinely adequate."
+    },
+    {
+      "id": "maglock_no_fire",
+      "when": {
+        "all": [
+          {
+            "field": "locking_hardware",
+            "equals": "mag_lock"
+          },
+          {
+            "field": "fire_alarm_interface",
+            "in": [
+              "no",
+              "unknown"
+            ]
+          }
+        ]
+      },
+      "severity": "blocking",
+      "message": "Magnetic locks require a life-safety release path. Fire alarm interface must be resolved before this scope is issued."
+    },
+    {
+      "id": "hardware_owner_unknown",
+      "when": {
+        "field": "hardware_provided_by",
+        "equals": "unknown"
+      },
+      "severity": "blocking",
+      "message": "Door hardware responsibility is unassigned. This is the most common source of scope disputes - resolve before issuing."
+    },
+    {
+      "id": "reuse_untested_wire",
+      "when": {
+        "field": "existing_wiring_reuse",
+        "equals": "yes_untested"
+      },
+      "severity": "assumption",
+      "message": "Existing reader wiring is assumed serviceable but has not been tested. Replacement is not carried in this scope."
+    },
+    {
+      "id": "switch_not_confirmed",
+      "when": {
+        "field": "switch_capacity_confirmed",
+        "equals": "no"
+      },
+      "severity": "assumption",
+      "message": "Switch port availability and PoE budget are unconfirmed. Additional switching is not carried in this scope."
+    }
+  ],
+  "accessory_catalogue": [
+    {
+      "sku": "CF82-WMT",
+      "description": "CF82 wall mount bracket",
+      "unit": "each"
+    },
+    {
+      "sku": "CF82-PMT",
+      "description": "CF82 pendant mount kit with drop pipe",
+      "unit": "each"
+    },
+    {
+      "sku": "CM42-WMT",
+      "description": "CM42 wall mount arm",
+      "unit": "each"
+    },
+    {
+      "sku": "CM42-PMT",
+      "description": "CM42 pendant cap and drop pipe",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-TBAR-KIT",
+      "description": "T-bar ceiling support kit",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-CORNER-ADPT",
+      "description": "Corner mount adapter",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-POLE-ADPT",
+      "description": "Pole mount adapter with banding",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-BACKBOX-OD",
+      "description": "Outdoor-rated back box / junction box",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-IR-ILLUM",
+      "description": "Supplemental IR illuminator",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-MEDIA-CONV",
+      "description": "Fiber media converter (pair)",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-POE-INJ",
+      "description": "PoE injector / midspan",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-PSU-LV",
+      "description": "Low-voltage power supply / transformer",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-BATT-12V7",
+      "description": "12V 7Ah sealed battery",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-REX-PIR",
+      "description": "Request-to-exit PIR sensor",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-PTE-BTN",
+      "description": "Push-to-exit button",
+      "unit": "each"
+    },
+    {
+      "sku": "ACC-ARMOR-LOOP",
+      "description": "Armored cable loop for overhead door contact",
+      "unit": "each"
+    },
+    {
+      "sku": "DC-REC",
+      "description": "Recessed door contact",
+      "unit": "each"
+    },
+    {
+      "sku": "HW-STRIKE",
+      "description": "Electric strike (model per door schedule)",
+      "unit": "each"
+    },
+    {
+      "sku": "HW-MAG-1200",
+      "description": "1200lb magnetic lock with mounting brackets",
+      "unit": "each"
+    },
+    {
+      "sku": "CBL-CAT6",
+      "description": "Cat6 riser cable",
+      "unit": "ft"
+    },
+    {
+      "sku": "CBL-CAT6-PLN",
+      "description": "Cat6 plenum cable",
+      "unit": "ft"
+    },
+    {
+      "sku": "CBL-CAT6A",
+      "description": "Cat6a cable",
+      "unit": "ft"
+    },
+    {
+      "sku": "CBL-FIBER-MM",
+      "description": "Multimode fiber",
+      "unit": "ft"
+    },
+    {
+      "sku": "CND-GEN",
+      "description": "Conduit and fittings",
+      "unit": "ft"
+    },
+    {
+      "sku": "CON-FIRESTOP",
+      "description": "Fire-stopping materials for rated penetrations",
+      "unit": "lot"
+    },
+    {
+      "sku": "CON-TERM-KIT",
+      "description": "Terminations, jacks, patch cords and misc. consumables",
+      "unit": "lot"
+    }
+  ],
+  "cable_type_labels": {
+    "cat6": "Cat6 riser",
+    "cat6_plenum": "Cat6 plenum",
+    "cat6a": "Cat6a",
+    "fiber_mm": "Multimode fiber",
+    "composite": "Composite (data + power)"
+  },
+  "universal_question_sets": [
+    "sourcing"
+  ]
+}

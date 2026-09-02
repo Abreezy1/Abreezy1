@@ -1,0 +1,63 @@
+{
+  "stage": "anchor",
+  "title": "Anchor to a past project",
+  "intro": "Name a previous engagement this one resembles. Everything after this is about the differences from that anchor, not a scope built from nothing.",
+  "similarity_questions": [
+    {
+      "id": "similarity_dimensions",
+      "prompt": "What specifically makes it similar?",
+      "type": "multiselect",
+      "required": true,
+      "taggable": false,
+      "options": [
+        { "value": "complexity", "label": "Complexity of the install" },
+        { "value": "equipment_mix", "label": "Equipment mix" },
+        { "value": "site_type", "label": "Site type" },
+        { "value": "scale", "label": "Scale / device count" },
+        { "value": "subcontract_shape", "label": "Subcontractor arrangement" },
+        { "value": "client", "label": "Same client / same standards" },
+        { "value": "building_construction", "label": "Building construction and pathways" }
+      ]
+    },
+    {
+      "id": "scale_delta",
+      "prompt": "How does the scale compare to the anchor?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "options": [
+        { "value": "smaller", "label": "Materially smaller" },
+        { "value": "similar", "label": "About the same" },
+        { "value": "larger", "label": "Materially larger" }
+      ]
+    },
+    {
+      "id": "key_differences",
+      "prompt": "What is different about this one?",
+      "help": "The differences are the whole point of the anchor. List everything you already know diverges - site conditions, equipment, who does what.",
+      "type": "longtext",
+      "required": true,
+      "taggable": true
+    },
+    {
+      "id": "anchor_problems",
+      "prompt": "What went wrong on the anchor project that shouldn't repeat here?",
+      "help": "Change orders, missed hardware, access problems, subcontractor disputes. These become exclusions or assumptions in this document.",
+      "type": "longtext",
+      "required": true,
+      "taggable": true
+    },
+    {
+      "id": "reuse_clauses",
+      "prompt": "Should the anchor's scope language be carried across as the baseline?",
+      "type": "select",
+      "required": true,
+      "taggable": false,
+      "options": [
+        { "value": "yes", "label": "Yes - use it as the baseline" },
+        { "value": "partial", "label": "Partly - structure only, rewrite the detail" },
+        { "value": "no", "label": "No - reference only" }
+      ]
+    }
+  ]
+}
